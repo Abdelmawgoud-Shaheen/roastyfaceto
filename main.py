@@ -62,6 +62,17 @@ def handle_text(message):
 
 # تشغيل التطبيق
 if __name__ == "__main__":
-    # عند تشغيل محليًا، يتم تشغيل الخادم بدون webhook
-    print("✅ Bot running locally. Use webhook when deployed.")
+    BASE_URL = os.environ.get("BASE_URL")  # أدخل من Railway
+
+    if BASE_URL:
+        webhook_url = f"{BASE_URL}/{API_TOKEN}"
+        set_hook = bot.set_webhook(url=webhook_url)
+        if set_hook:
+            print(f"✅ Webhook set successfully: {webhook_url}")
+        else:
+            print("❌ Failed to set webhook.")
+    else:
+        print("⚠️ BASE_URL not set. Skipping webhook setup.")
+
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+
