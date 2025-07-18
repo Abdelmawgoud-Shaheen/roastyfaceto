@@ -47,4 +47,5 @@ def roast_image():
 @app.route(f"/{API_TOKEN}", methods=["POST"])
 def telegram_webhook():
     update = telebot.types.Update.de_json(request.stream.read().decode("utf-8"))
-    bot.process_new_upda
+    bot.process_new_updates([update])
+
