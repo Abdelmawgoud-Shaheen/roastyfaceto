@@ -93,14 +93,44 @@
         <input type="file" accept="image/*" id="upload" />
         <label for="upload">Choose image</label>
       </div>
-      <button class="btn-action" onclick="alert('This will roast the image with AI')">🔥 Roast Me</button>
+      <button class="btn-action" id="roastBtn">🔥 Roast Me</button>
       <button class="btn-action" onclick="Telegram.WebApp.sendData('shared')">🔁 Share Roast</button>
       <p class="warning">⚠️ This web app only previews. Real roasting happens inside Telegram.</p>
+      <div id="result" style="margin-top:1rem; font-style: italic;"></div>
     </main>
 
     <script>
       Telegram.WebApp.ready();
       Telegram.WebApp.expand();
+
+      const roastBtn = document.getElementById("roastBtn");
+      const uploadInput = document.getElementById("upload");
+      const resultBox = document.getElementById("result");
+
+      roastBtn.addEventListener("click", async () => {
+        const file = uploadInput.files[0];
+        if (!file) {
+          resultBox.innerText = "⚠️ Please select an image first.";
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append("image", file);
+
+        resultBox.innerText = "⏳ Roasting in progress...";
+
+        try {
+          const response = await fetch("/roast", {
+            method: "POST",
+            body: formData,
+          });
+
+          const data = await response.json();
+          resultBox.innerText = data.result || "😶 No roast returned.";
+        } catch (error) {
+          resultBox.innerText = "❌ Failed to roast. Try again later.";
+        }
+      });
     </script>
   </body>
 </html>
