@@ -136,7 +136,7 @@
         resultBox.innerText = "⏳ Roasting in progress...";
 
         try {
-          const response = await fetch("/roast", {
+          const response = await fetch("https://railway.com/project/219cfde0-c1a8-457a-973d-70d7d5f4f25a/service/b02ab0a0-6738-4932-8789-a06bd0c37d09?environmentId=c2bebf04-a057-4e8c-977b-32e532a4f173", {
             method: "POST",
             body: formData,
           });
