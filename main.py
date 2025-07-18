@@ -2,7 +2,7 @@ import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 import os
 
-API_TOKEN = os.getenv(8104310460:AAFuNTe_pp722I40CHvgAmwLrkrzOlx2gqQ)
+API_TOKEN = os.getenv("8104310460:AAFuNTe_pp722I40CHvgAmwLrkrzOlx2gqQ")
 bot = telebot.TeleBot(API_TOKEN)
 
 @bot.message_handler(commands=['start'])
