@@ -83,6 +83,12 @@
         color: #888;
         margin-top: 1rem;
       }
+
+      #filename {
+        font-size: 0.9rem;
+        color: #555;
+        margin-top: 0.5rem;
+      }
     </style>
   </head>
   <body>
@@ -92,6 +98,7 @@
       <div class="filebox">
         <input type="file" accept="image/*" id="upload" />
         <label for="upload">Choose image</label>
+        <div id="filename"></div>
       </div>
       <button class="btn-action" id="roastBtn">🔥 Roast Me</button>
       <button class="btn-action" onclick="Telegram.WebApp.sendData('shared')">🔁 Share Roast</button>
@@ -106,6 +113,15 @@
       const roastBtn = document.getElementById("roastBtn");
       const uploadInput = document.getElementById("upload");
       const resultBox = document.getElementById("result");
+      const filenameBox = document.getElementById("filename");
+
+      uploadInput.addEventListener("change", () => {
+        if (uploadInput.files.length > 0) {
+          filenameBox.innerText = `📁 Selected: ${uploadInput.files[0].name}`;
+        } else {
+          filenameBox.innerText = "";
+        }
+      });
 
       roastBtn.addEventListener("click", async () => {
         const file = uploadInput.files[0];
