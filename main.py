@@ -8,6 +8,8 @@ import os
 # التوكن الخاص بالبوت من BotFather
 API_TOKEN = os.environ.get("BOT_TOKEN")  # ضعه في إعدادات Railway كـ Environment Variable
 bot = telebot.TeleBot(API_TOKEN)
+if not API_TOKEN:
+    raise ValueError("❌ BOT_TOKEN is missing. Please set it in environment variables.")
 
 # إنشاء تطبيق Flask
 app = Flask(__name__)
