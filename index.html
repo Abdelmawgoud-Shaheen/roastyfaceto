@@ -1,36 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Roasty FaceTo</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-</head>
-<body>
-  <div class="container">
-    <h1>Roasty FaceTo</h1>
-    <p>Upload your photo and let AI roast it!</p>
-    <input type="file" id="imageInput" accept="image/*">
-    <button id="uploadBtn">Upload & Roast Me</button>
-  </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Roasty FaceTo</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #fff0f3;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
 
-  <script>
-    Telegram.WebApp.ready();
-    Telegram.WebApp.expand();
+      main {
+        text-align: center;
+        background: #ffffff;
+        padding: 2rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        max-width: 400px;
+        width: 90%;
+      }
 
-    // Show the Main Button for "Share Roast"
-    Telegram.WebApp.MainButton.setText("🔁 Share Roast");
-    Telegram.WebApp.MainButton.show();
+      h1 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: #ff4d6d;
+      }
 
-    Telegram.WebApp.MainButton.onClick(() => {
-      Telegram.WebApp.sendData("shared");
-    });
+      p {
+        font-size: 1rem;
+        color: #444;
+        margin: 0.5rem 0;
+      }
 
-    // Placeholder for upload button action
-    document.getElementById("uploadBtn").onclick = () => {
-      alert("This button will send the image to the Telegram bot for roasting.");
-    };
-  </script>
-</body>
+      .filebox {
+        margin: 1.5rem 0;
+      }
+
+      input[type="file"] {
+        display: none;
+      }
+
+      label[for="upload"] {
+        background-color: #ff4d6d;
+        color: white;
+        padding: 0.7rem 1.2rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background 0.3s ease;
+      }
+
+      label[for="upload"]:hover {
+        background-color: #e03153;
+      }
+
+      .warning {
+        font-size: 0.9rem;
+        color: #888;
+        margin-top: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Roasty FaceTo 🔥</h1>
+      <p>Select a photo of a human face and send it to our Telegram bot.</p>
+      <div class="filebox">
+        <input type="file" accept="image/*" id="upload" />
+        <label for="upload">Choose image</label>
+      </div>
+      <p class="warning">⚠️ This web app only previews. Real roasting happens inside Telegram.</p>
+    </main>
+
+    <script>
+      Telegram.WebApp.ready();
+      Telegram.WebApp.expand();
+
+      Telegram.WebApp.MainButton.setText("🔁 Share Roast");
+      Telegram.WebApp.MainButton.show();
+      Telegram.WebApp.MainButton.onClick(() => {
+        Telegram.WebApp.sendData("shared");
+      });
+    </script>
+  </body>
 </html>
