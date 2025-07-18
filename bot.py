@@ -1,8 +1,9 @@
-import os
 import telebot
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton, WebAppInfo
 
-API_TOKEN = os.getenv("8104310460:AAFuNTe_pp722I40CHvgAmwLrkrzOlx2gqQ")
+# ✅ التوكن مدمج مباشرًا (للتجربة فقط، غير آمن للنشر)
+API_TOKEN = "8104310460:AAFuNTe_pp722I40CHvgAmwLrkrzOlx2gqQ"
+
 bot = telebot.TeleBot(API_TOKEN)
 
 @bot.message_handler(commands=["start"])
