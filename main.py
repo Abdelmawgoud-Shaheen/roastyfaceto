@@ -1,75 +1,67 @@
-import os
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+from PIL import Image
+import io
 import telebot
-from telebot.types import ReplyKeyboardMarkup, KeyboardButton, WebAppInfo
-import requests
-import cv2
-import numpy as np
+import os
 
-API_TOKEN = "8104310460:AAFuNTe_pp722I40CHvgAmwLrkrzOlx2gqQ"
-
+# التوكن الخاص بالبوت من BotFather
+API_TOKEN = os.environ.get("BOT_TOKEN")  # ضعه في إعدادات Railway كـ Environment Variable
 bot = telebot.TeleBot(API_TOKEN)
 
-# ---------- Helper: Check if image has a human face ----------
-def has_face(image_bytes):
-    nparr = np.frombuffer(image_bytes, np.uint8)
-    img_np = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-    gray = cv2.cvtColor(img_np, cv2.COLOR_BGR2GRAY)
-    faces = face_cascade.detectMultiScale(gray, 1.3, 5)
-    return len(faces) > 0
+# إنشاء تطبيق Flask
+app = Flask(__name__)
+CORS(app)  # للسماح بالاتصال من Vercel
 
-# ---------- Helper: Call HuggingFace AI API (Secure) ----------
-def analyze_image_with_ai(image_bytes):
-    HUGGINGFACE_API_KEY = os.getenv("HF_TOKEN")  # Secure environment variable
+# نقطة التشغيل الرئيسية لتأكيد عمل السيرفر
+@app.route("/")
+def index():
+    return "✅ RoastyFaceTo AI backend is running."
 
-    headers = {
-        "Authorization": f"Bearer {HUGGINGFACE_API_KEY}"
-    }
+# نقطة استقبال الصور من الواجهة
+@app.route("/roast", methods=["POST"])
+def roast_image():
+    if "image" not in request.files:
+        return jsonify({"result": "❌ No image received."}), 400
 
-    files = {
-        'inputs': ('image.jpg', image_bytes, 'image/jpeg')
-    }
+    image_file = request.files["image"]
 
-    response = requests.post(
-        "https://api-inference.huggingface.co/models/Salesforce/blip-image-captioning-base",
-        headers=headers,
-        files=files
-    )
+    try:
+        # فتح الصورة للتحقق
+        image = Image.open(image_file.stream)
 
-    if response.status_code == 200:
-        result = response.json()
-        caption = result[0]["generated_text"]
-        return f"🔥 Roast caption: {caption}"
-    else:
-        return "⚠️ Failed to analyze the image. Please try again later."
+        # 🧠 مكان إدراج نموذج الذكاء الاصطناعي لاحقًا (تعديل السطر التالي)
+        roast_text = "🔥 That face could scare a mirror! 😂"
 
-# ---------- Handle /start command ----------
+        return jsonify({"result": roast_text})
+    except Exception as e:
+        return jsonify({"result": f"❌ Failed to process image: {str(e)}"}), 500
+
+# نقطة تلقي رسائل تيليجرام
+@app.route(f"/{API_TOKEN}", methods=["POST"])
+def telegram_webhook():
+    update = telebot.types.Update.de_json(request.stream.read().decode("utf-8"))
+    bot.process_new_updates([update])
+    return "OK", 200
+
+# الرد على /start من المستخدم
 @bot.message_handler(commands=["start"])
-def start(message):
-    markup = ReplyKeyboardMarkup(resize_keyboard=True)
-    web_app = WebAppInfo("https://roastyfaceto.vercel.app/")
-    btn = KeyboardButton(text="🎨 Open the App", web_app=web_app)
-    markup.add(btn)
-    bot.send_message(message.chat.id, "Click the button below to open the AI roast app:", reply_markup=markup)
+def send_welcome(message):
+    bot.reply_to(message, "👋 Welcome to Roasty FaceTo! Send me a face photo and I’ll roast it 🔥")
 
-# ---------- Handle shared data from WebApp ----------
-@bot.message_handler(content_types=['web_app_data'])
-def handle_web_app_data(message):
-    data = message.web_app_data.data
-    bot.send_message(message.chat.id, f"✅ Data received from web app: {data}")
-
-# ---------- Handle photo uploads ----------
-@bot.message_handler(content_types=['photo'])
+# الرد على الصور فقط
+@bot.message_handler(content_types=["photo"])
 def handle_photo(message):
-    file_id = message.photo[-1].file_id
-    file_info = bot.get_file(file_id)
-    image = bot.download_file(file_info.file_path)
-
-    if not has_face(image):
-        bot.reply_to(message, "😅 No clear human face detected. Please send a photo with a visible person.")
-        return
-
-    roast = analyze_image_with_ai(image)
+    roast = "😈 That face… AI needed therapy after seeing it!"  # استبدل بـ API لو أردت
     bot.reply_to(message, roast)
 
-bot.polling()
+# الرد على أي شيء آخر
+@bot.message_handler(func=lambda m: True)
+def handle_text(message):
+    bot.reply_to(message, "📸 Please send me a photo of a human face.")
+
+# تشغيل التطبيق
+if __name__ == "__main__":
+    # عند تشغيل محليًا، يتم تشغيل الخادم بدون webhook
+    print("✅ Bot running locally. Use webhook when deployed.")
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
