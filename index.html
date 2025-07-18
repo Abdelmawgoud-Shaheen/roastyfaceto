@@ -55,10 +55,27 @@
         cursor: pointer;
         font-weight: bold;
         transition: background 0.3s ease;
+        display: inline-block;
       }
 
       label[for="upload"]:hover {
         background-color: #e03153;
+      }
+
+      .btn-action {
+        background-color: #6a4c93;
+        color: white;
+        padding: 0.7rem 1.2rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        margin: 0.5rem;
+        transition: background 0.3s ease;
+      }
+
+      .btn-action:hover {
+        background-color: #59327a;
       }
 
       .warning {
@@ -76,18 +93,14 @@
         <input type="file" accept="image/*" id="upload" />
         <label for="upload">Choose image</label>
       </div>
+      <button class="btn-action" onclick="alert('This will roast the image with AI')">🔥 Roast Me</button>
+      <button class="btn-action" onclick="Telegram.WebApp.sendData('shared')">🔁 Share Roast</button>
       <p class="warning">⚠️ This web app only previews. Real roasting happens inside Telegram.</p>
     </main>
 
     <script>
       Telegram.WebApp.ready();
       Telegram.WebApp.expand();
-
-      Telegram.WebApp.MainButton.setText("🔁 Share Roast");
-      Telegram.WebApp.MainButton.show();
-      Telegram.WebApp.MainButton.onClick(() => {
-        Telegram.WebApp.sendData("shared");
-      });
     </script>
   </body>
 </html>
