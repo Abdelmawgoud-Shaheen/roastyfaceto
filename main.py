@@ -7,7 +7,7 @@ import os
 
 # ✅ قراءة متغيرات البيئة
 API_TOKEN = os.environ.get("BOT_TOKEN")
-BASE_URL = os.environ.get("BASE_URL")  # مثال: https://your-app.up.railway.app
+BASE_URL = os.environ.get("BASE_URL")
 
 # ✅ تحقق من وجود التوكن
 if not API_TOKEN:
